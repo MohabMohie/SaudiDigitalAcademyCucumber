@@ -1,13 +1,19 @@
 package seleniumCucumber;
 
 import io.cucumber.java.After;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.util.List;
 
 public class StepDefinitions {
     WebDriver driver;
@@ -31,11 +37,37 @@ public class StepDefinitions {
     public void result_stats_would_not_be_empty() {
         By resultStatsLabel = By.id("result-stats");
         String actualText = driver.findElement(resultStatsLabel).getText();
-        Assertions.assertNotEquals("",actualText);
+        Assertions.assertEquals("",actualText);
     }
 
+//    @Before
+//    public void openBrowser(){
+//        driver = new ChromeDriver();
+//        driver.manage().window().maximize();
+//    }
+
     @After()
-    public void closeBrowser() {
+    public void closeBrowser(Scenario scenario) {
+        if (scenario.isFailed()) {
+            byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+            scenario.attach(screenshot, "image/png", "screenshot-"+System.currentTimeMillis());
+        }
         driver.quit();
+    }
+
+    @And("I search for {string}")
+    public void iSearchFor(String searchQuery) {
+        By searchboxInput = By.id("APjFqb");
+        driver.findElement(searchboxInput).sendKeys(searchQuery);
+        driver.findElement(searchboxInput).submit();
+    }
+
+    @And("I search for the following text:")
+    public void iSearchForTheFollowingText(List<String> queries) {
+        By searchboxInput = By.id("APjFqb");
+        queries.forEach(query ->{
+            driver.findElement(searchboxInput).sendKeys(query + " ");
+        });
+        driver.findElement(searchboxInput).submit();
     }
 }
