@@ -37,7 +37,7 @@ public class StepDefinitions {
     public void result_stats_would_not_be_empty() {
         By resultStatsLabel = By.id("result-stats");
         String actualText = driver.findElement(resultStatsLabel).getText();
-        Assertions.assertEquals("",actualText);
+        Assertions.assertNotEquals("",actualText);
     }
 
 //    @Before
