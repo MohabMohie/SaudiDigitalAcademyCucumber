@@ -30,3 +30,8 @@ Feature: This is a Selenium Demo using Cucumber
       | query                     |
       |    Saudi Digital Academy  |
       |    Test Automation        |
+
+@BetterGherkin
+  Scenario: Google Search
+    When I search for something
+    Then result stats would not be empty
